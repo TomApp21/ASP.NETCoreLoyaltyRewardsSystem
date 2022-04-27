@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ASP.NETCoreLoyaltyRewardsSystem.Models;
 
 namespace ASP.NETCoreLoyaltyRewardsSystem.Areas.Identity.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
+    public DbSet<Transaction> Transactions { get; set; }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
@@ -15,6 +18,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.Entity<Transaction>(entity =>
+        {
+            entity.Property(e => e.DateOfTransaction)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.UserId)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.AmountBeforeDiscount)
+               .IsRequired()
+               .HasMaxLength(50);
+            entity.Property(e => e.PointsApplied)
+               .HasMaxLength(50);
+        });
+
         base.OnModelCreating(builder);
         // Customize the ASP.NET Identity model and override the defaults if needed.
         // For example, you can rename the ASP.NET Identity table names and more.
@@ -35,3 +53,8 @@ public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<Appli
 
     }
 }
+
+
+
+
+
