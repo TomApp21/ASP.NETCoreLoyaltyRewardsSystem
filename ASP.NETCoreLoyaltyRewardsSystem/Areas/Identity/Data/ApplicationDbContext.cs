@@ -33,7 +33,5 @@ public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<Appli
         builder.Property(u => u.DateOfBirth).HasMaxLength(255);
         builder.Property(u => u.AvailablePoints).HasDefaultValue(500); 
 
-
-
     }
 }
