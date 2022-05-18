@@ -1,8 +1,82 @@
-﻿@{
+﻿@using ASP.NETCoreLoyaltyRewardsSystem.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@model ApplicationUser
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome @Model.FirstName!</h1>
+    <br />
+    <br />
+    <br />
+
+
+
+
+           @if (SignInManager.IsSignedIn(User))
+                        {
+    <h4>You have <b>@Model.AvailablePoints</b> points! </h4>
+    <img src="images/qr.png" alt="Sample Photo" />
+                        }
 </div>
+
+<div class="centre-div">
+    
+    <button onclick="simulateScan()">Simulate Redeem</button>
+    <button>Simulate Scan</button>
+</div>
+
+
+<script>
+
+    // simulate scan
+    // go to controller
+    // generate int between 400 and 2000
+    // add to transaction table
+    // add points to asp user table
+    // js show dialog that you spent £ and gained x points
+    // ok
+
+
+    function simulateScan() {
+
+
+                $.ajax({
+                    url: '@Url.Action("AddTransaction", "Transaction")',
+                    type: "POST",
+                    data: { },
+                    cache: false,
+                    success: function (data) {
+                        alert(data)
+                        location.reload(true);
+
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+
+    }
+
+</script>
+
+<style>
+    .blog-shadow-dreamy {
+        width: 200px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
+                0 2px 4px rgba(0,0,0,0.07), 
+                0 4px 8px rgba(0,0,0,0.07), 
+                0 8px 16px rgba(0,0,0,0.07),
+                0 16px 32px rgba(0,0,0,0.07), 
+                0 32px 64px rgba(0,0,0,0.07);
+}
+
+    .centre-div {
+        text-align: center;
+    }
+    </style>

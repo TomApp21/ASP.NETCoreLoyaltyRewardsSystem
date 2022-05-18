@@ -13,7 +13,7 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; }
 
     public string DateOfBirth { get; set; }
-    public int AvailablePoints { get; set; } 
+    public int AvailablePoints { get; set; } = 0;
 
 
 }
