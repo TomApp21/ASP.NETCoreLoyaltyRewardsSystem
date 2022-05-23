@@ -2,7 +2,7 @@
 
 namespace ASP.NETCoreLoyaltyRewardsSystem.Models
 {
-    public class Transaction
+    public partial class Transaction
     {
         public int Id { get; set; }
         public string UserId { get; set; }
@@ -13,5 +13,8 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Models
         [Display(Name = "Amount Spent")]
         public int AmountBeforeDiscount { get; set; }
         public int PointsApplied { get; set; }
+
+
     }
+
 }

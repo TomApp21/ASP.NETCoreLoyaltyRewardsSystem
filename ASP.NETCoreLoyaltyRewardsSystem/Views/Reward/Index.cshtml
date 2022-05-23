@@ -1,49 +1,93 @@
-﻿@model IEnumerable<ASP.NETCoreLoyaltyRewardsSystem.Models.Transaction>
+﻿@using ASP.NETCoreLoyaltyRewardsSystem.Areas.Identity.Data
+@model ApplicationUser
 
 @{
     ViewData["Title"] = "Rewards";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Rewards</h1>
+<br />
+<br />
+<h1 style="text-align:center; margin:auto">Reward Tracker</h1>
+    <h4 style="text-align:center; margin:auto">You have <b>@Model.AvailablePoints</b> points! </h4>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfTransaction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AmountBeforeDiscount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PointsApplied)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfTransaction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AmountBeforeDiscount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PointsApplied)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-            </td>
-        </tr>
+<div class="centreBar">
+    <div style="padding-top: 200px;">
+
+            <img class="horizontalBar" style="position:relative; top:-70px;" width="1000" src="~/images/Graphic.png" />
+            <div class="tankH">
+                <div class="liquid"></div>
+            </div>
+    </div>
+    <img class="verticalBar" width="200" src="/images/graphicvertical.png" />
+    <div class="tankH">
+      <div class="liquid"></div>
+    </div>
+</div>
+
+
+
+<style>
+
+    .tank {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  height: 1000px;
+  width: 40px;
+  border: 1px solid black;
+
 }
-    </tbody>
-</table>
+    .tankH {
+position: absolute;
+transform: rotate(90deg);
+right: 903px;
+top: -179px;
+height: 915px;
+width: 50px;
+border: 1px solid black;
+  
+}
+
+.liquid {
+  transition: height 3s;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  height: 20%;
+  width: 100%;
+  background: green;
+}
+
+.centreBar {
+    margin: auto;
+    text-align: center;
+}
+
+</style>
+
+<script>
+
+    
+
+    window.onload = function() {
+                 var liquid= document.querySelector('.liquid');
+
+                    $.ajax({
+                url: '@Url.Action("ReadPoints", "Reward")',
+                type: "POST",
+                data: { },
+                cache: false,
+                success: function (data) {
+                    liquid.style.height = data + '%';
+
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+    }
+
+
+
+</script>

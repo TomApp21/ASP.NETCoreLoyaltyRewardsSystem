@@ -18,8 +18,8 @@
 
 
 
-           @if (SignInManager.IsSignedIn(User))
-                        {
+    @if (SignInManager.IsSignedIn(User))
+                {
     <h4>You have <b>@Model.AvailablePoints</b> points! </h4>
     <img src="images/qr.png" alt="Sample Photo" />
                         }
@@ -27,8 +27,8 @@
 
 <div class="centre-div">
     
-    <button onclick="simulateScan()">Simulate Redeem</button>
-    <button>Simulate Scan</button>
+    <button onclick="simulateRedeem()">Simulate Redeem</button>
+    <button onclick="simulateScan()">Simulate Scan</button>
 </div>
 
 
@@ -46,22 +46,47 @@
     function simulateScan() {
 
 
-                $.ajax({
-                    url: '@Url.Action("AddTransaction", "Transaction")',
-                    type: "POST",
-                    data: { },
-                    cache: false,
-                    success: function (data) {
-                        alert(data)
-                        location.reload(true);
+            $.ajax({
+                url: '@Url.Action("AddTransaction", "Transaction")',
+                type: "POST",
+                data: { },
+                cache: false,
+                success: function (data) {
+                    alert(data)
+                    location.reload(true);
 
-                    },
-                    error: function () {
-                        alert("error");
-                    }
-                });
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
 
     }
+
+
+        function simulateRedeem() {
+
+
+            $.ajax({
+                url: '@Url.Action("RedeemItem", "Transaction")',
+                type: "POST",
+                data: { },
+                cache: false,
+                success: function (data) {
+                    alert(data)
+                    location.reload(true);
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+
+    }
+
+
+
+
+
 
 </script>
 

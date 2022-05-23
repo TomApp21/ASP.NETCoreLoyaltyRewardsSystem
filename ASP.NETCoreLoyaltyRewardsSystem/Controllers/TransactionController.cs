@@ -10,6 +10,7 @@ using ASP.NETCoreLoyaltyRewardsSystem.Areas.Identity.Data;
 using ASP.NETCoreLoyaltyRewardsSystem.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using ASP.NETCoreLoyaltyRewardsSystem.ViewModel;
 
 namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
 {
@@ -31,7 +32,18 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
 
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userTransactions = allTransactions.Where(x => x.UserId == userId).ToList();
-            return View(userTransactions);
+
+            List<TransactionViewModel> transactions = new List<TransactionViewModel>();
+            foreach (var transaction in userTransactions)
+            {
+                transactions.Add(new TransactionViewModel 
+                    { PointsApplied = transaction.PointsApplied, 
+                      AmountBeforeDiscount = transaction.AmountBeforeDiscount,
+                      DateOfTransaction = transaction.DateOfTransaction 
+                });
+            }
+
+            return View(transactions);
         }
 
         public async Task<string> AddTransaction()
@@ -68,9 +80,105 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
             }
 
             return rtnString = "You spent a total of £" + amountSpnt + " gained " + Math.Round(amountSpnt * 10) + " points!";
-
-
         }
+
+        public async Task<string> RedeemItem()
+        {
+            // Checks points
+            // If above 100 --> Eligible
+            // If x>100 switch case, random between 1-5 (snack, drink, main)
+            // Take x points off user
+            // add transaction to database, no points spent, points applied (x)
+            // return string, you redeemed a free drink.
+
+            // at some point - add in if over 500 total points spent (after 1000 in redemptions, recieved free 100 points etc)
+
+
+
+
+            string rtnString = "";
+
+
+            // update user table
+            ApplicationUser userModel = await _userManager.FindByIdAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            int userPoints = userModel.AvailablePoints;
+            int rewardIndex = 0;
+
+
+            if (userPoints < 100)
+            {
+                return rtnString = "Not eligible for a reward. Must have at least 100 points.";
+            }
+            else if (userPoints >= 100 && userPoints < 200)
+            {
+                rewardIndex = 1;
+            }
+            else if (userPoints >= 200 && userPoints < 500)
+            {
+                rewardIndex = 2;
+
+            }
+            else if (userPoints >= 500 && userPoints < 1000)
+            {
+                rewardIndex = 3;
+            }
+            else if (userPoints >= 1000)
+            {
+                rewardIndex = 4;
+            }
+
+
+            Random rnd = new Random();
+            int reward = rnd.Next(1, rewardIndex);
+
+            int points = 0;
+
+
+            switch(reward)
+            {
+                case (1):
+                    rtnString = "You redeemed a free drink.";
+                    points = 100;
+                    break;
+                case (2):
+                    rtnString = "You redeemed a free snack.";
+                    points = 200; 
+                    break;
+                case (3):
+                    rtnString = "You redeemed a free sandwich.";
+                    points = 500;
+                    break;
+                case (4):
+                    rtnString = "You redeemed a free large sandwich.";
+                    points = 1000;
+                    break;
+            }
+
+
+
+            using (var context = _context)
+            {
+                var transaction = new Transaction
+                {
+                    UserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    DateOfTransaction = DateTime.Now,
+                    AmountBeforeDiscount = 0,
+                    PointsApplied = points
+                };
+                _context.Add(transaction);
+                await context.SaveChangesAsync();
+
+
+                userModel.AvailablePoints -= Convert.ToInt32(points);
+                IdentityResult result = await _userManager.UpdateAsync(userModel);
+
+            }
+            return rtnString;
+        }
+
+
+
 
 
         // GET: Transactions/Details/5

@@ -16,3 +16,17 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+@media only screen and (max-width: 600px) {
+    .horizontalBar {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .verticalBar {
+
+        display: none;
+    }
+}
