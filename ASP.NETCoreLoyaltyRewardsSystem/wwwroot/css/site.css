@@ -20,7 +20,18 @@ body {
 
 @media only screen and (max-width: 600px) {
     .horizontalBar {
-        display: none;
+        width: 342px;
+        left: 20px;
+    }
+
+    .tankH {
+        position: absolute;
+        transform: rotate(90deg);
+        right: 172px;
+        top: 132px;
+        height: 319px;
+        width: 27px;
+        border: 1px solid black;
     }
 }
 
@@ -28,5 +39,28 @@ body {
     .verticalBar {
 
         display: none;
+
     }
+    .horizontalBar {
+        width: 1000px;
+    }
+    .tankH {
+        position: absolute;
+        transform: rotate(90deg);
+        right: 903px;
+        top: -179px;
+        height: 915px;
+        width: 50px;
+        border: 1px solid black;
+    }
+
+
+
+    .centreBar {
+        margin: auto;
+        text-align: center;
+    }
+
+
+
 }

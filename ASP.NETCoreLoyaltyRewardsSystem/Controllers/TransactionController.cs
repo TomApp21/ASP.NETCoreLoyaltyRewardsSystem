@@ -130,7 +130,7 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
 
 
             Random rnd = new Random();
-            int reward = rnd.Next(1, rewardIndex);
+            int reward = rnd.Next(1, rewardIndex++);
 
             int points = 0;
 
@@ -156,7 +156,6 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
             }
 
 
-
             using (var context = _context)
             {
                 var transaction = new Transaction
@@ -170,6 +169,10 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
                 await context.SaveChangesAsync();
 
 
+
+
+
+
                 userModel.AvailablePoints -= Convert.ToInt32(points);
                 IdentityResult result = await _userManager.UpdateAsync(userModel);
 
@@ -179,7 +182,45 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
 
 
 
+        public async Task<bool> CheckLoyaltyBonus()
+        {
+            string rtnString = string.Empty;
+            bool blnReturn = false;
 
+
+            using (var context = _context)
+            {
+
+                var allTransactions = await _context.Transactions.ToListAsync();
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userTransactions = allTransactions.Where(x => x.UserId == userId && x.PointsApplied > 0).ToList();
+                var lastRedemption = allTransactions.Where(x => x.UserId == userId && x.PointsApplied > 0).OrderByDescending(x => x.Id).FirstOrDefault();
+
+
+                int totalPointsRedeemed = 0;
+
+                foreach (var t in userTransactions)
+                {
+                    totalPointsRedeemed += t.PointsApplied;
+                }
+
+                if (totalPointsRedeemed > 2000 && (totalPointsRedeemed - lastRedemption.PointsApplied) < 2000)
+                {
+                    var transactionLoyal = new Transaction
+                    {
+                        UserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        DateOfTransaction = DateTime.Now,
+                        AmountBeforeDiscount = 0,
+                        PointsApplied = 1000,
+                    };
+                    _context.Add(transactionLoyal);
+                    await context.SaveChangesAsync();
+                    blnReturn = true;
+                }
+            }
+
+            return blnReturn;
+        }
 
         // GET: Transactions/Details/5
         public async Task<IActionResult> Details(int? id)
