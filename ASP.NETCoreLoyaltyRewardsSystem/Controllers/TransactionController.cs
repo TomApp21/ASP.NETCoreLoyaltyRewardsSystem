@@ -194,17 +194,20 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
                 var allTransactions = await _context.Transactions.ToListAsync();
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var userTransactions = allTransactions.Where(x => x.UserId == userId && x.PointsApplied > 0).ToList();
-                var lastRedemption = allTransactions.Where(x => x.UserId == userId && x.PointsApplied > 0).OrderByDescending(x => x.Id).FirstOrDefault();
+                //var lastRedemption = allTransactions.Where(x => x.UserId == userId && x.PointsApplied > 0).OrderByDescending(x => x.Id).FirstOrDefault();
 
 
                 int totalPointsRedeemed = 0;
+                bool loyaltyMember = false;
 
                 foreach (var t in userTransactions)
                 {
                     totalPointsRedeemed += t.PointsApplied;
+                    if (t.PointsApplied == 1000)
+                        loyaltyMember = true;
                 }
 
-                if (totalPointsRedeemed > 2000 && (totalPointsRedeemed - lastRedemption.PointsApplied) < 2000)
+                if (totalPointsRedeemed >= 2000 && !loyaltyMember)
                 {
                     var transactionLoyal = new Transaction
                     {
@@ -216,6 +219,14 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
                     _context.Add(transactionLoyal);
                     await context.SaveChangesAsync();
                     blnReturn = true;
+
+                    // update user table
+                    ApplicationUser userModel = await _userManager.FindByIdAsync(transactionLoyal.UserId);
+                    //(User.Identity.GetUserId());
+
+                    userModel.AvailablePoints += transactionLoyal.PointsApplied;
+                    IdentityResult result = await _userManager.UpdateAsync(userModel);
+
                 }
             }
 

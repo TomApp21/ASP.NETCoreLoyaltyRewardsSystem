@@ -73,8 +73,10 @@
                 data: { },
                 cache: false,
                 success: function (data) {
-                    alert(data)
+                    alert(data);
+                    checkLoyaltyBonus();
                     location.reload(true);
+
 
                 },
                 error: function () {
@@ -84,8 +86,9 @@
 
     }
 
-    function checkLoyaltyBonus() {
 
+    
+    window.onload = function() {
                 $.ajax({
                 url: '@Url.Action("CheckLoyaltyBonus", "Transaction")',
                 type: "POST",
@@ -94,13 +97,19 @@
                 success: function (data) {
                     if(data) {
                              alert('You have redeemed over 2000 points in total. Enjoy a free 1000 points on us for being such a loyal customer!');
-                            location.reload(true);
+                             location.reload(true);
                     }               
                 },
                 error: function () {
-                    alert("error");
+                     alert("error");
                 }
             });
+
+    }
+
+    function checkLoyaltyBonus() {
+
+
 
     
     }
