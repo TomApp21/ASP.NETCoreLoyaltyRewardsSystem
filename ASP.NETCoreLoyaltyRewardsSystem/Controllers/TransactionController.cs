@@ -84,17 +84,6 @@ namespace ASP.NETCoreLoyaltyRewardsSystem.Controllers
 
         public async Task<string> RedeemItem()
         {
-            // Checks points
-            // If above 100 --> Eligible
-            // If x>100 switch case, random between 1-5 (snack, drink, main)
-            // Take x points off user
-            // add transaction to database, no points spent, points applied (x)
-            // return string, you redeemed a free drink.
-
-            // at some point - add in if over 500 total points spent (after 1000 in redemptions, recieved free 100 points etc)
-
-
-
 
             string rtnString = "";
 
